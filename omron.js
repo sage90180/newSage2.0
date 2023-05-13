@@ -4,31 +4,72 @@ const path = require("path");
 
 (async () => {
   try {
-    // 創建資料夾
-    const folderPath = path.join(__dirname, "images");
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath);
-      console.log("Folder created successfully!");
-    }
-
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
     await page.goto("https://www.ia.omron.com/product/item/11735/en/");
 
-    const imageURL = await page.evaluate(() => {
+    const imageUrls = await page.evaluate(() => {
+      let imgData = [];
       const item = document.querySelector(".inner-contents-area");
-      let productImg = item.querySelector(".image-left").querySelector("img");
+      // 取得產品照片
+      let productImgs = item.querySelectorAll("img");
 
-      return productImg.src;
+      productImgs.forEach((e) => {
+        if (
+          !e.classList.contains("iconA01") &&
+          !e.parentNode.classList.contains("print-preview")
+        ) {
+          imgData.push(e.src);
+        }
+      });
+
+      return imgData;
     });
 
-    const viewSource = await page.goto(imageURL);
-    const buffer = await viewSource.buffer();
+    const getData = await page.evaluate(() => {
+      const data = {};
+      data.name = document
+        .querySelector(".heading-C01")
+        .querySelector("h1").innerText;
+      data.subTitle = document.querySelector(".sub-title").innerText;
+      data.description = document
+        .querySelector(".description")
+        .querySelector("h2").innerText;
+      data.tabs = [];
+      getTabs = document
+        .querySelector(".jsversion")
+        .querySelector(".tabs")
+        .querySelectorAll("li");
+      getTabs.forEach((e) => {
+        data.tabs.push(e.querySelector("a").innerText);
+      });
+      data.table = document.querySelector(".table-blockA01").innerHTML;
 
-    const filePath = path.join(folderPath, "image.jpg");
-    fs.writeFileSync(filePath, buffer);
-    console.log("Image downloaded successfully!");
+      return data;
+    });
+
+    // 創建資料夾
+    const folderPath = path.join(__dirname, `${getData.name}`);
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath);
+      console.log("Folder created successfully!");
+    }
+
+    for (let i = 0; i < imageUrls.length; i++) {
+      const imageUrl = imageUrls[i];
+      const viewSource = await page.goto(imageUrl);
+      const buffer = await viewSource.buffer();
+
+      const filePath = path.join(folderPath, `${getData.name}-${i + 1}.jpg`);
+      fs.writeFileSync(filePath, buffer);
+      console.log(`Image ${i + 1} downloaded successfully!`);
+    }
+
+    fs.writeFileSync(
+      path.join(folderPath, `data.json`),
+      JSON.stringify(getData, null, 2)
+    );
 
     await browser.close();
   } catch (error) {

@@ -1,0 +1,11 @@
+{
+  "name": "ZV2-N22-2",
+  "subTitle": "Enclosed Switches",
+  "description": "Enclosed Limit switches, General load, IP65, SPDT (AC), SPDT, Sealed roller plunger, G1/2, Side mounting (diagonal)",
+  "tabs": [
+    "Ratings / Performance",
+    "Dimensions",
+    "Circuits configuration"
+  ],
+  "table": "\n    <table class=\"tableA01\">\n                <tbody><tr>\n            <th>Shape/Structure</th>\n            <td>\n                                    Enclosed Limit switches<br>\n                            </td>\n        </tr>\n                <tr>\n            <th>Actuator</th>\n            <td>\n                                    Sealed roller plunger<br>\n                            </td>\n        </tr>\n                <tr>\n            <th>Contact form</th>\n            <td>\n                                    SPDT<br>\n                            </td>\n        </tr>\n                <tr>\n            <th>Degree of protection</th>\n            <td>\n                                    IP65<br>\n                            </td>\n        </tr>\n            </tbody></table>\n"
+}
