@@ -44,7 +44,8 @@ const path = require("path");
       getTabs.forEach((e) => {
         data.tabs.push(e.querySelector("a").innerText);
       });
-      data.table = document.querySelector(".table-blockA01").innerHTML;
+      data.descriptionTable =
+        document.querySelector(".table-blockA01").innerHTML;
 
       return data;
     });
